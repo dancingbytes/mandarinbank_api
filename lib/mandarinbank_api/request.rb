@@ -2,9 +2,9 @@ module MandarinbankApi
 
   class Request
 
-    DEBUG         = (ENV['MANDARIN_BANK_DEBUG'] == true).freeze
-    VERIFY_MODE   = (ENV['MANDARIN_BANK_VERIFY_MODE'] == true).freeze
-    TIMEOUT       = (ENV['MANDARIN_BANK_TIMEOUT'] || 25).freeze
+    DEBUG         = (ENV['MANDARIN_BANK_DEBUG'] == 'true').freeze
+    VERIFY_MODE   = (ENV['MANDARIN_BANK_VERIFY_MODE'] == 'true').freeze
+    TIMEOUT       = (ENV['MANDARIN_BANK_TIMEOUT'].try(:to_i) || 30).freeze
     USER_AGENT    = (ENV['MANDARIN_BANK_USER_AGENT'] || "RubyMB #{::MandarinbankApi::VERSION}").freeze
     CONTENT_TYPE  = 'application/json'.freeze
 

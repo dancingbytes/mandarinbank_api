@@ -1,6 +1,6 @@
 module MandarinbankApi
 
-  class MandarinRespondService
+  class Respond
 
     def initialize(request)
 

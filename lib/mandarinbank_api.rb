@@ -54,17 +54,17 @@ module MandarinbankApi
   )
 
     datas = {
-      "payment": {
-        "orderId":  "#{order_id}",
-        "action":   "pay",
-        "price":    "#{price}"
+      "payment" => {
+        "orderId" =>  "#{order_id}",
+        "action"  =>  "pay",
+        "price"   =>  "#{price}"
       },
-      "customerInfo": {
-        "email":    "#{email}"
+      "customerInfo" => {
+        "email" =>    "#{email}"
       },
-      "urls": {
-        "callback": CHECK_URL,
-        "return":   RETURN_URL
+      "urls" => {
+        "callback" => CHECK_URL,
+        "return"   => RETURN_URL
       }
     }
 

@@ -12,28 +12,28 @@ module MandarinbankApi
 
     def success?
       @error.nil?
-    end # success?
+    end
 
     def failure?
       !success?
-    end # failure?
+    end
 
     alias :error? :failure?
 
     def error
       @error
-    end # error
+    end
 
     def result
       @result
-    end # result
+    end
 
     def result!
 
       raise error if failure?
       result
 
-    end # result!
+    end
 
     private
 

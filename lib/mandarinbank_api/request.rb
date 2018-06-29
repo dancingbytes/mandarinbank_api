@@ -28,7 +28,7 @@ module MandarinbankApi
     def call(params)
 
       # Данные запроса в формате JSON
-      @request.body = params.to_json
+      @request.body = ::Oj.dump(params)
 
       begin
         @http.request @request

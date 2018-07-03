@@ -50,17 +50,19 @@ module MandarinbankApi
     price:,
     order_id:,
     email:,
-    actual_till: nil
+    actual_till:    nil,
+    phone:          nil,
+    custom_values:  []
   )
 
     datas = {
       "payment" => {
-        "orderId" =>  "#{order_id}",
+        "orderId" =>  order_id,
         "action"  =>  "pay",
-        "price"   =>  "#{price}"
+        "price"   =>  price
       },
       "customerInfo" => {
-        "email" =>    "#{email}"
+        "email" =>    email
       },
       "urls" => {
         "callback" => CHECK_URL,
@@ -69,20 +71,143 @@ module MandarinbankApi
     }
 
     datas["payment"]["orderActualTill"] = actual_till.strftime(TIME_FORMAT) if actual_till
+    datas["customerInfo"]["phone"] = phone if phone
+    datas["customValues"] = custom_values unless custom_values.empty?
 
-    datas.merge!(
-      yield(datas)
-    ) if block_given?
+    action_with(datas)
 
-    # Запрос
-    req = MandarinbankApi::Request.call(
-      PURCHASE_URL,
-      auth,
-      datas
-    )
+  end
 
-    # Ответ
-    ::MandarinbankApi::Respond.new(req)
+  # Отмена успешной оплаты
+  def refund(
+    price:,
+    order_id:,
+    transaction_id:,
+    custom_values:  []
+  )
+
+    datas = {
+      "payment" => {
+        "orderId" =>  order_id,
+        "action"  =>  "reversal",
+        "price"   =>  price
+      },
+      "urls" => {
+        "callback" => CHECK_URL,
+        "return"   => RETURN_URL
+      },
+      "target" => {
+        "transaction" => transaction_id
+      }
+    }
+
+    datas["customValues"] = custom_values unless custom_values.empty?
+
+    action_with(datas)
+
+  end
+
+  #
+  # Двухстадийная оплата
+
+  # Первичная блокировка денежных средств
+  def preauth(
+    price:,
+    order_id:,
+    email:,
+    actual_till:    nil,
+    phone:          nil,
+    custom_values:  []
+  )
+
+    datas = {
+      "payment" => {
+        "orderId" =>  order_id,
+        "action"  =>  "preauth",
+        "price"   =>  price
+      },
+      "customerInfo" => {
+        "email" =>    email
+      },
+      "urls" => {
+        "callback" => CHECK_URL,
+        "return"   => RETURN_URL
+      }
+    }
+
+    datas["payment"]["orderActualTill"] = actual_till.strftime(TIME_FORMAT) if actual_till
+    datas["customerInfo"]["phone"] = phone if phone
+    datas["customValues"] = custom_values unless custom_values.empty?
+
+    action_with(datas)
+
+  end
+
+  # Полное или частичное списание ранее заблокированных средств
+  def confirm_auth(
+    price:,
+    order_id:,
+    email:,
+    transaction_id:,
+    phone:          nil,
+    custom_values:  []
+  )
+
+    datas = {
+      "payment" => {
+        "orderId" =>  order_id,
+        "action"  =>  "pay",
+        "price"   =>  price
+      },
+      "customerInfo" => {
+        "email" =>    email
+      },
+      "urls" => {
+        "callback" => CHECK_URL,
+        "return"   => RETURN_URL
+      },
+      "target" => {
+        "transaction" => transaction_id
+      }
+    }
+
+    datas["customerInfo"]["phone"] = phone if phone
+    datas["customValues"] = custom_values unless custom_values.empty?
+
+    action_with(datas)
+
+  end
+
+  # Разблокировка ранее заблокированной суммы
+  def reversal(
+    order_id:,
+    email:,
+    transaction_id:,
+    phone:          nil,
+    custom_values:  []
+  )
+
+    datas = {
+      "payment" => {
+        "orderId" =>  order_id,
+        "action"  =>  "reversal"
+      },
+      "customerInfo" => {
+        "email" =>    email
+      },
+      "urls" => {
+        "callback" => CHECK_URL,
+        "return"   => RETURN_URL
+      },
+      "target" => {
+        "transaction" => transaction_id
+      }
+    }
+
+    datas["customerInfo"]["phone"] = phone if phone
+    datas["customValues"] = custom_values unless custom_values.empty?
+
+    action_with(datas)
 
   end
 
@@ -94,6 +219,21 @@ module MandarinbankApi
     reqid = ::SecureRandom.hex
     hash  = ::Digest::SHA2.new(256).hexdigest("#{MECHANT_ID}-#{reqid}-#{SECRET}")
     "#{MECHANT_ID}-#{hash}-#{reqid}"
+
+  end
+
+  # Операция над данными: запрос-ответ
+  def action_with(datas)
+
+    # Запрос
+    req = MandarinbankApi::Request.call(
+      PURCHASE_URL,
+      auth,
+      datas
+    )
+
+    # Ответ
+    ::MandarinbankApi::Respond.new(req)
 
   end
 

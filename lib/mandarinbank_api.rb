@@ -23,6 +23,7 @@ module MandarinbankApi
   RETURN_URL    = ENV['MANDARIN_BANK_RETURN_URL'].to_s.freeze
 
   TIME_FORMAT   = '%Y-%m-%d %H:%M:%S+00:00'.freeze
+  JOIN_CHAR     = '-'.freeze
 
   # Валидация параметров запроса
   def valid?(raw_post)
@@ -35,7 +36,7 @@ module MandarinbankApi
     return false unless sign.present?
 
     # Выбираем только значения и соединяем их с секретным ключом в строку
-    datas  = params.values.push(SECRET).join('-')
+    datas  = params.values.push(SECRET).join(JOIN_CHAR)
 
     # Считаем хеш-сумму
     target = ::Digest::SHA2.new(256).hexdigest(datas)

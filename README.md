@@ -49,13 +49,15 @@ MANDARIN_BANK_TIMEOUT=25
 
 ## Использование
 
-1. На данный момент в геме реализована "одностадийная оплата" (http://docs.mandarinbank.com/api_v2.html#purchase)
-
+1. Одностадийная оплата (http://docs.mandarinbank.com/api_v2.html#purchase)
 ```ruby
   MandarinbankApi.purchase(
-    price:    500.00,       # Сумма оплаты
-    order_id: 1234,         # Номер вашего заказа
-    email:    'test@ya.ru'  # Электронная почта клиена
+    price:          500.00,        # Сумма оплаты
+    order_id:       1234,          # Номер заказа
+    email:          'test@ya.ru',  # Электронная почта клиена
+    actual_till:    nil,           # Дата жизни транзакции (необязаельно)
+    phone:          nil,           # Телефон клиента (необязаельно)
+    custom_values:  []             # Произвольный набор данных согласно документации банка (необязаельно)
   )
 ```
 
@@ -65,12 +67,83 @@ MANDARIN_BANK_TIMEOUT=25
 - error     -- Ошибка в формате (json) или класс ошибки
 - result    -- Ответ сервера банка (в соответствии с документацией банка, http://docs.mandarinbank.com/api_v2.html#purchase)
 
-2. Для верификации ответа банка используется метод
+2. Для верификации ответа банка используется метод (http://docs.mandarinbank.com/api_v2.html#callback)
 ```ruby
   MandarinbankApi.valid?(raw_post)
 ```
 
 Метод возвращает true/false. Необходимо передать сырое тело запроса. В rails это request.raw_post
+
+3. Отмена успешной оплаты (http://docs.mandarinbank.com/api_v2.html#refund)
+```ruby
+  MandarinbankApi.refund(
+    price:          500.00,       # Сумма оплаты
+    order_id:       1234,         # Номер заказа
+    transaction_id: 'asqwq1asas', # Номер транакции полученой в результате проведения оплаты
+    custom_values:  []            # Произвольный набор данных согласно документации банка (необязаельно)
+  )
+```
+
+Результатом выполнения будем экземпляр класса MandarinbankApi::Respond, с методами:
+- success?  -- Успешна ли операция
+- failure?  -- Возникла ли ошибка во время формирования платежа
+- error     -- Ошибка в формате (json) или класс ошибки
+- result    -- Ответ сервера банка (в соответствии с документацией банка, http://docs.mandarinbank.com/api_v2.html#purchase)
+
+4. Методы двухстадийной оплаты (http://docs.mandarinbank.com/api_v2.html#preauth-confirmauth-reversal)
+
+4.1 Первичная блокировка денежный средств (http://docs.mandarinbank.com/api_v2.html#preauth)
+```ruby
+  MandarinbankApi.preauth(
+    price:         500.00,       # Сумма оплаты
+    order_id:      1234,         # Номер заказа
+    email:         'test@ya.ru', # Электронная почта клиена
+    actual_till:    nil,         # Дата жизни транзакции (необязаельно)
+    phone:          nil,         # Телефон клиента (необязаельно)
+    custom_values:  []           # Произвольный набор данных согласно документации банка (необязаельно)
+  )
+```
+
+Результатом выполнения будем экземпляр класса MandarinbankApi::Respond, с методами:
+- success?  -- Успешна ли операция
+- failure?  -- Возникла ли ошибка во время формирования платежа
+- error     -- Ошибка в формате (json) или класс ошибки
+- result    -- Ответ сервера банка (в соответствии с документацией банка, http://docs.mandarinbank.com/api_v2.html#purchase)
+
+4.2 Полное или частичное списание ранее заблокированных средств (http://docs.mandarinbank.com/api_v2.html#confirmauth)
+```ruby
+  MandarinbankApi.confirm_auth(
+    price:            500.00,       # Сумма оплаты
+    order_id:         1234,         # Номер заказа
+    email:            'test@ya.ru', # Электронная почта клиена
+    transaction_id:   'asqwq1asas', # Номер транакции полученой в результате проведения оплаты
+    phone:            nil,          # Телефон клиента (необязаельно)
+    custom_values:    []            # Произвольный набор данных согласно документации банка (необязаельно)
+  )
+```
+
+Результатом выполнения будем экземпляр класса MandarinbankApi::Respond, с методами:
+- success?  -- Успешна ли операция
+- failure?  -- Возникла ли ошибка во время формирования платежа
+- error     -- Ошибка в формате (json) или класс ошибки
+- result    -- Ответ сервера банка (в соответствии с документацией банка, http://docs.mandarinbank.com/api_v2.html#purchase)
+
+4.3 Разблокировка ранее заблокированной суммы (http://docs.mandarinbank.com/api_v2.html#reversal)
+```ruby
+  MandarinbankApi.reversal(
+    order_id:         1234,         # Номер заказа
+    email:            'test@ya.ru', # Электронная почта клиена
+    transaction_id:   'asqwq1asas', # Номер транакции полученой в результате проведения оплаты
+    phone:            nil,          # Телефон клиента (необязаельно)
+    custom_values:    []            # Произвольный набор данных согласно документации банка (необязаельно)
+  )
+```
+
+Результатом выполнения будем экземпляр класса MandarinbankApi::Respond, с методами:
+- success?  -- Успешна ли операция
+- failure?  -- Возникла ли ошибка во время формирования платежа
+- error     -- Ошибка в формате (json) или класс ошибки
+- result    -- Ответ сервера банка (в соответствии с документацией банка, http://docs.mandarinbank.com/api_v2.html#purchase)
 
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/dancingbytes/mandarinbank_api.

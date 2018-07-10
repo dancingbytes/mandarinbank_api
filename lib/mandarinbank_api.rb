@@ -15,12 +15,12 @@ module MandarinbankApi
 
   extend self
 
-  MECHANT_ID    = ENV['MANDARIN_BANK_MECHANT_ID'].to_s.freeze
-  SECRET        = ENV['MANDARIN_BANK_SECRET'].to_s.freeze
+  MECHANT_ID    = ::ENV.fetch("MANDARIN_BANK_MECHANT_ID") { '' }.freeze
+  SECRET        = ::ENV.fetch("MANDARIN_BANK_SECRET") { '' }.freeze
 
-  PURCHASE_URL  = ENV['MANDARIN_BANK_PURCHASE_URL'].to_s.freeze
-  CHECK_URL     = ENV['MANDARIN_BANK_CHECK_URL'].to_s.freeze
-  RETURN_URL    = ENV['MANDARIN_BANK_RETURN_URL'].to_s.freeze
+  PURCHASE_URL  = ::ENV.fetch("MANDARIN_BANK_PURCHASE_URL") { '' }.freeze
+  CHECK_URL     = ::ENV.fetch("MANDARIN_BANK_CHECK_URL") { '' }.freeze
+  RETURN_URL    = ::ENV.fetch("MANDARIN_BANK_RETURN_URL") { '' }.freeze
 
   TIME_FORMAT   = '%Y-%m-%d %H:%M:%S+00:00'.freeze
   JOIN_CHAR     = '-'.freeze

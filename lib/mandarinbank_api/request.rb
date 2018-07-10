@@ -2,8 +2,8 @@ module MandarinbankApi
 
   class Request
 
-    DEBUG         = ::ENV.fetch("MANDARIN_BANK_DEBUG") { 'true' }.freeze
-    VERIFY_MODE   = ::ENV.fetch("MANDARIN_BANK_VERIFY_MODE") { 'true' }.freeze
+    DEBUG         = (::ENV.fetch("MANDARIN_BANK_DEBUG") { 'true' } == 'true').freeze
+    VERIFY_MODE   = (::ENV.fetch("MANDARIN_BANK_VERIFY_MODE") { 'true' } == 'true').freeze
     TIMEOUT       = ::ENV.fetch("MANDARIN_BANK_TIMEOUT") { 30 }.to_i.freeze
     USER_AGENT    = ::ENV.fetch("MANDARIN_BANK_USER_AGENT") { "RubyMB #{::MandarinbankApi::VERSION}" }.freeze
     CONTENT_TYPE  = 'application/json'.freeze

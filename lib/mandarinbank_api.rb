@@ -58,12 +58,12 @@ module MandarinbankApi
 
     datas = {
       "payment" => {
-        "orderId" =>  "#{order_id}",
+        "orderId" =>  order_id,
         "action"  =>  "pay",
-        "price"   =>  "#{price}"
+        "price"   =>  price
       },
       "customerInfo" => {
-        "email" =>    "#{email}"
+        "email" =>    email
       },
       "urls" => {
         "callback" => CHECK_URL,
@@ -72,7 +72,7 @@ module MandarinbankApi
     }
 
     datas["payment"]["orderActualTill"] = actual_till.strftime(TIME_FORMAT) if actual_till
-    datas["customerInfo"]["phone"] = "#{phone}" if phone
+    datas["customerInfo"]["phone"] = phone if phone
     datas["customValues"] = custom_values unless custom_values.empty?
 
     action_with(datas)

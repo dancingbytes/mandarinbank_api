@@ -58,12 +58,12 @@ module MandarinbankApi
 
     datas = {
       "payment" => {
-        "orderId" =>  order_id,
+        "orderId" =>  order_id.to_s,
         "action"  =>  "pay",
-        "price"   =>  price
+        "price"   =>  price.to_s
       },
       "customerInfo" => {
-        "email" =>    email
+        "email" =>    email.to_s
       },
       "urls" => {
         "callback" => CHECK_URL,
@@ -72,7 +72,7 @@ module MandarinbankApi
     }
 
     datas["payment"]["orderActualTill"] = actual_till.strftime(TIME_FORMAT) if actual_till
-    datas["customerInfo"]["phone"] = phone if phone
+    datas["customerInfo"]["phone"] = phone.to_s if phone
     datas["customValues"] = custom_values unless custom_values.empty?
 
     action_with(datas)
@@ -89,16 +89,16 @@ module MandarinbankApi
 
     datas = {
       "payment" => {
-        "orderId" =>  order_id,
+        "orderId" =>  order_id.to_s,
         "action"  =>  "reversal",
-        "price"   =>  price
+        "price"   =>  price.to_s
       },
       "urls" => {
         "callback" => CHECK_URL,
         "return"   => RETURN_URL
       },
       "target" => {
-        "transaction" => transaction_id
+        "transaction" => transaction_id.to_s
       }
     }
 
@@ -123,12 +123,12 @@ module MandarinbankApi
 
     datas = {
       "payment" => {
-        "orderId" =>  order_id,
+        "orderId" =>  order_id.to_s,
         "action"  =>  "preauth",
-        "price"   =>  price
+        "price"   =>  price.to_s
       },
       "customerInfo" => {
-        "email" =>    email
+        "email" =>    email.to_s
       },
       "urls" => {
         "callback" => CHECK_URL,
@@ -137,7 +137,7 @@ module MandarinbankApi
     }
 
     datas["payment"]["orderActualTill"] = actual_till.strftime(TIME_FORMAT) if actual_till
-    datas["customerInfo"]["phone"] = phone if phone
+    datas["customerInfo"]["phone"] = phone.to_s if phone
     datas["customValues"] = custom_values unless custom_values.empty?
 
     action_with(datas)
@@ -156,23 +156,23 @@ module MandarinbankApi
 
     datas = {
       "payment" => {
-        "orderId" =>  order_id,
+        "orderId" =>  order_id.to_s,
         "action"  =>  "pay",
-        "price"   =>  price
+        "price"   =>  price.to_s
       },
       "customerInfo" => {
-        "email" =>    email
+        "email" =>    email.to_s
       },
       "urls" => {
         "callback" => CHECK_URL,
         "return"   => RETURN_URL
       },
       "target" => {
-        "transaction" => transaction_id
+        "transaction" => transaction_id.to_s
       }
     }
 
-    datas["customerInfo"]["phone"] = phone if phone
+    datas["customerInfo"]["phone"] = phone.to_s if phone
     datas["customValues"] = custom_values unless custom_values.empty?
 
     action_with(datas)
@@ -190,22 +190,22 @@ module MandarinbankApi
 
     datas = {
       "payment" => {
-        "orderId" =>  order_id,
+        "orderId" =>  order_id.to_s,
         "action"  =>  "reversal"
       },
       "customerInfo" => {
-        "email" =>    email
+        "email" =>    email.to_s
       },
       "urls" => {
         "callback" => CHECK_URL,
         "return"   => RETURN_URL
       },
       "target" => {
-        "transaction" => transaction_id
+        "transaction" => transaction_id.to_s
       }
     }
 
-    datas["customerInfo"]["phone"] = phone if phone
+    datas["customerInfo"]["phone"] = phone.to_s if phone
     datas["customValues"] = custom_values unless custom_values.empty?
 
     action_with(datas)

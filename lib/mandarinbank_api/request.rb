@@ -46,7 +46,7 @@ module MandarinbankApi
       @http.set_debug_output($stdout) if DEBUG
 
       @http.use_ssl      = true
-      @http.verify_mode  = VERIFY_MODE
+      @http.verify_mode  = verify_mode
 
       @http.open_timeout = TIMEOUT
       @http.read_timeout = TIMEOUT
@@ -66,6 +66,10 @@ module MandarinbankApi
 
       self
 
+    end
+
+    def verify_mode
+      VERIFY_MODE ? ::OpenSSL::SSL::VERIFY_PEER : ::OpenSSL::SSL::VERIFY_NONE
     end
 
   end
